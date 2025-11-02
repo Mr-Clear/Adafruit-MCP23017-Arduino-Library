@@ -147,6 +147,32 @@ void Adafruit_MCP23XXX::writeGPIO(uint8_t value, uint8_t port) {
   GPIO.write(value);
 }
 
+uint16_t Adafruit_MCP23XXX::getPinDirectionMask() {
+  Adafruit_BusIO_Register IODIRA(i2c_dev, spi_dev, MCP23XXX_SPIREG,
+                                 getRegister(MCP23XXX_IODIR, 0));
+  Adafruit_BusIO_Register IODIRB(i2c_dev, spi_dev, MCP23XXX_SPIREG,
+                                 getRegister(MCP23XXX_IODIR, 1));
+  uint8_t iodir_a = IODIRA.read() & 0xFF;
+  uint8_t iodir_b = 0;
+  if (pinCount > 8) {
+    iodir_b = IODIRB.read() & 0xFF;
+  }
+  return (static_cast<uint16_t>(iodir_b) << 8) | iodir_a;
+}
+
+uint16_t Adafruit_MCP23XXX::getPinPullupMask() {
+  Adafruit_BusIO_Register GPPUA(i2c_dev, spi_dev, MCP23XXX_SPIREG,
+                                getRegister(MCP23XXX_GPPU, 0));
+  Adafruit_BusIO_Register GPPUB(i2c_dev, spi_dev, MCP23XXX_SPIREG,
+                                getRegister(MCP23XXX_GPPU, 1));
+  uint8_t gppu_a = GPPUA.read() & 0xFF;
+  uint8_t gppu_b = 0;
+  if (pinCount > 8) {
+    gppu_b = GPPUB.read() & 0xFF;
+  }
+  return (static_cast<uint16_t>(gppu_b) << 8) | gppu_a;
+}
+
 /**************************************************************************/
 /*!
   @brief Configure the interrupt system.

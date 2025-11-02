@@ -55,6 +55,10 @@ public:
   uint8_t readGPIO(uint8_t port = 0);
   void writeGPIO(uint8_t value, uint8_t port = 0);
 
+  // read configuration
+  uint16_t getPinDirectionMask();
+  uint16_t getPinPullupMask();
+
   // interrupts
   void setupInterrupts(bool mirroring, bool openDrain, uint8_t polarity);
   void setupInterruptPin(uint8_t pin, uint8_t mode = CHANGE);
